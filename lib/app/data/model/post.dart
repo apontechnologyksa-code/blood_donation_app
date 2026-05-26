@@ -1,72 +1,85 @@
 class Post {
-  int? id;
-  int? userId;
-  String? name;
-  String? hospital;
-  String? location;
-  String? phone;
-  String? bloodGroup;
-  int? unit;
-  String? time;
-  String? date;
-  String? status;
-  String? reason;
-  String? description;
-  String? createdAt;
-  String? updatedAt;
+  final int id;
+  final int userId;
+  final String name;
+  final String hospital;
+  final String location;
+  final String phone;
+  final String bloodGroup;
+  final int unit;
+  final String time;
+  final String date;
+  final String status;
+  final String reason;
+  final String description;
+  final String createdAt;
+  final String updatedAt;
 
-  Post(
-      {this.id,
-        this.userId,
-        this.name,
-        this.hospital,
-        this.location,
-        this.phone,
-        this.bloodGroup,
-        this.unit,
-        this.time,
-        this.date,
-        this.status,
-        this.reason,
-        this.description,
-        this.createdAt,
-        this.updatedAt});
+  Post({
+    this.id = 0,
+    this.userId = 0,
+    this.name = '',
+    this.hospital = '',
+    this.location = '',
+    this.phone = '',
+    this.bloodGroup = '',
+    this.unit = 0,
+    this.time = '',
+    this.date = '',
+    this.status = '',
+    this.reason = '',
+    this.description = '',
+    this.createdAt = '',
+    this.updatedAt = '',
+  });
 
-  Post.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    userId = json['user_id'];
-    name = json['name'];
-    hospital = json['hospital'];
-    location = json['location'];
-    phone = json['phone'];
-    bloodGroup = json['blood_group'];
-    unit = json['unit'];
-    time = json['time'];
-    date = json['date'];
-    status = json['status'];
-    reason = json['reason'];
-    description = json['description'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+  /// 🔥 SAFE INT PARSER
+  static int safeInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    return int.tryParse(value.toString()) ?? 0;
+  }
+
+  factory Post.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return Post();
+
+    return Post(
+      id: safeInt(json['id']),
+      userId: safeInt(json['user_id']),
+      name: json['name'] ?? '',
+      hospital: json['hospital'] ?? '',
+      location: json['location'] ?? '',
+      phone: json['phone'] ?? '',
+      bloodGroup: json['blood_group'] ?? '',
+      unit: safeInt(json['unit']),
+      time: json['time'] ?? '',
+      date: json['date'] ?? '',
+      status: json['status'] ?? '',
+      reason: json['reason'] ?? '',
+      description: json['description'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['user_id'] = this.userId;
-    data['name'] = this.name;
-    data['hospital'] = this.hospital;
-    data['location'] = this.location;
-    data['phone'] = this.phone;
-    data['blood_group'] = this.bloodGroup;
-    data['unit'] = this.unit;
-    data['time'] = this.time;
-    data['date'] = this.date;
-    data['status'] = this.status;
-    data['reason'] = this.reason;
-    data['description'] = this.description;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    return data;
+    return {
+      'id': id,
+      'user_id': userId,
+      'name': name,
+      'hospital': hospital,
+      'location': location,
+      'phone': phone,
+      'blood_group': bloodGroup,
+      'unit': unit,
+      'time': time,
+      'date': date,
+      'status': status,
+      'reason': reason,
+      'description': description,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+    };
   }
 }
+

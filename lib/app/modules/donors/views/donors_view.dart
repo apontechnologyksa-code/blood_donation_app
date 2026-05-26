@@ -172,6 +172,7 @@ class CustomAppBar extends StatelessWidget {
               AppConfig.appName,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w800,
+                color: colorScheme.onSurface,
               ),
             ),
             Text(

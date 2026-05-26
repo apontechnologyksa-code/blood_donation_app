@@ -23,28 +23,48 @@ class MyBloodPostController extends GetxController {
 
   void getBloodPost() async {
     try {
+      print("🚀 getBloodPost called");
       isLoading.value = true;
 
       final response = await bloodServices.bloodPostShow();
+
+      print("📡 Status Code: ${response.statusCode}");
+      print("📦 Raw Response: ${response.body}");
+
       final result = jsonDecode(response.body);
+
+      print("🧾 Decoded Result: $result");
 
       if (response.statusCode == 200 && result['status'] == true) {
         List data = result['data'];
 
+        print("📊 Total Posts: ${data.length}");
+
         posts.clear();
+
         for (int i = 0; i < data.length; i++) {
-          posts.add(Post.fromJson(data[i]));
+          print("➡️ Parsing item $i: ${data[i]}");
+
+          final post = Post.fromJson(data[i]);
+          posts.add(post);
         }
+
+        print("✅ Posts loaded successfully: ${posts.length}");
 
         applySearch(searchText.value);
       } else {
+        print("❌ API Error Response: $result");
+
         showAppSnackbar(
           title: "Error",
-          message: result['message'],
+          message: result['message'] ?? "Unknown error",
           isError: true,
         );
       }
-    } catch (e) {
+    } catch (e, stack) {
+      print("🔥 Exception occurred: $e");
+      print("📍 Stack trace: $stack");
+
       showAppSnackbar(
         title: "Error",
         message: "Something went wrong",
@@ -52,9 +72,9 @@ class MyBloodPostController extends GetxController {
       );
     } finally {
       isLoading.value = false;
+      print("⏳ Loading finished");
     }
   }
-
   void deletePost(String id) async {
     try {
       final response = await bloodServices.bloodDelete(id);

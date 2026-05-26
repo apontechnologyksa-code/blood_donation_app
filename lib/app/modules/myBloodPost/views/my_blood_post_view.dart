@@ -16,7 +16,7 @@ class MyBloodPostView extends GetView<MyBloodPostController> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: AppColors.primary,
-        title: const Text('আমার সকল পোস্ট'),
+        title: const Text('আমার সকল পোস্ট',style: TextStyle(color: Colors.white),),
         centerTitle: true,
       ),
 

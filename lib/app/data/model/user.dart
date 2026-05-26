@@ -36,7 +36,7 @@ class User {
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    name = json['name'];
+    name = json['name'] ?? json['full_name'];
     phone = json['phone'];
     email = json['email'];
     profileImage = json['profile_image'];
@@ -52,6 +52,7 @@ class User {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
+
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

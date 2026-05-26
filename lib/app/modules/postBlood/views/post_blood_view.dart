@@ -18,6 +18,7 @@ class PostBloodView extends GetView<PostBloodController> {
         backgroundColor: AppColors.primary,
         title: const Text(
           'রক্তের জন্য পোস্ট',
+          style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
       ),

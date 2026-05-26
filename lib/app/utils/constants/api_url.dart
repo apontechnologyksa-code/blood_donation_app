@@ -3,7 +3,7 @@ import 'package:blood_donation_app/app/utils/constants/app_config.dart';
 class ApiUrl {
 
 
-  static final String register = "${AppConfig.baseUrl}/api/signup";
+  static final String register = "${AppConfig.baseUrl}/api/register";
   static final String login = "${AppConfig.baseUrl}/api/login";
   static final String profile = "${AppConfig.baseUrl}/api/profile";
   static final String update = "${AppConfig.baseUrl}/api/profile-update";

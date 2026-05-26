@@ -23,34 +23,71 @@ class ProfileController extends GetxController {
 
   Future<void> profile() async {
     try {
+      print("🚀 Profile function started");
+
       isLoading.value = true;
+
+      print("⏳ Loading started");
+
+      /// API Call
       final response = await services.profile();
 
+      print("📡 Status Code: ${response.statusCode}");
+      print("📡 Response Body: ${response.body}");
+
+      /// Success
       if (response.statusCode == 200) {
+
         final result = jsonDecode(response.body);
+
+        print("✅ Decoded Result: $result");
 
         final user = result['user'];
 
+        print("👤 User Data: $user");
+
         userData.value = User.fromJson(user);
-      } else if (response.statusCode == 401) {
+
+        print("✅ User model updated successfully");
+      }
+
+      /// Unauthorized
+      else if (response.statusCode == 401) {
+
+        print("❌ Unauthorized user");
+
         showAppSnackbar(
           title: "ত্রুটি",
           message: "আবার লগইন করুন",
           isError: true,
         );
-      } else {
+      }
+
+      /// Other errors
+      else {
+
+        print("❌ Unknown Error: ${response.statusCode}");
+
         showAppSnackbar(
           title: "ত্রুটি",
-          message: "কিছু সমস্যা হয়েছে : ${response.statusCode}",
+          message:
+          "কিছু সমস্যা হয়েছে : ${response.statusCode}",
           isError: true,
         );
       }
     } catch (e) {
+
+      print("🔥 Exception: $e");
+
       throw Exception("Something went wrong : $e");
     } finally {
+
       isLoading.value = false;
+
+      print("⛔ Loading stopped");
     }
   }
+
 
   Future<void> logout() async {
     AuthSeassion authSeassion = AuthSeassion();

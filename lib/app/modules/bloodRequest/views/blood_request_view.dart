@@ -49,25 +49,25 @@ class BloodRequestView extends GetView<BloodRequestController> {
       ),
 
       body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: controller.getAllBloodRequestPosts,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 10),
-            child: Obx( () {
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 10),
+          child: Obx( () {
 
-              if(controller.isLoading.value){
-                return Center(child: CircularProgressIndicator(),
-                );
-              }
+            if(controller.isLoading.value){
+              return Center(child: CircularProgressIndicator(),
+              );
+            }
 
-              if (controller.bloodPosts.isEmpty) {
-                return Scaffold(
-                  body: const Center(child: Text("কোনো রিকোয়েস্ট নেই")),
-                );
-              }
+            if (controller.bloodPosts.isEmpty) {
+              return Scaffold(
+                body: const Center(child: Text("কোনো রিকোয়েস্ট নেই")),
+              );
+            }
 
 
-             return ListView.separated(
+           return RefreshIndicator(
+             onRefresh: controller.getAllBloodRequestPosts,
+             child: ListView.separated(
                 itemCount: controller.bloodPosts.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
@@ -119,11 +119,11 @@ class BloodRequestView extends GetView<BloodRequestController> {
                 }, separatorBuilder: (BuildContext context, int index) {
                 return SizedBox(height: 12,);
               },
-              );
+              ),
+           );
 
-            }
+          }
 
-            ),
           ),
         ),
       ),

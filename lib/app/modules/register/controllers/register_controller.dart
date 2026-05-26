@@ -37,53 +37,139 @@ class RegisterController extends GetxController {
 
   Future<void> register() async {
     try {
-      if (!(formKey.currentState?.validate() ?? false)) return;
+      print("🚀 Register function started");
+
+      if (!(formKey.currentState?.validate() ?? false)) {
+        print("❌ Form validation failed");
+        return;
+      }
+
+      /// Blood group check
+      if (selectedBlood.value == null) {
+        showAppSnackbar(
+          title: "ত্রুটি",
+          message: "রক্তের গ্রুপ নির্বাচন করুন",
+          isError: true,
+        );
+        return;
+      }
 
       isLoading.value = true;
+      print("⏳ Loading started");
 
+      /// Request Data
       final Map<String, dynamic> userData = {
         "name": nameController.text.trim(),
-        "phone": phoneController.text.trim(),
+        "phone": phoneController.text.trim().isEmpty
+            ? null
+            : phoneController.text.trim(),
         "email": emailController.text.trim(),
         "password": passwordController.text,
-        "blood": selectedBlood.value!,
+        "blood": selectedBlood.value,
         "user_type": selectedUserType.value,
       };
 
+      print("📦 User Data: $userData");
+
+      /// API Call
       final response = await authServices.register(userData);
+
+      print("📡 Status Code: ${response.statusCode}");
+      print("📡 Response Body: ${response.body}");
+
       final result = jsonDecode(response.body);
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      /// ================= SUCCESS =================
+      if (response.statusCode == 200 ||
+          response.statusCode == 201) {
+
         final token = result['token'];
-        authSeassion.saveToken(token);
+        final user = result['user'];
 
-        showAppSnackbar(title: "সফল", message: "সফলভাবে নিবন্ধন হয়েছে");
-        Get.offAllNamed(Routes.LOGIN);
-      } else if (response.statusCode == 422) {
-        print(result);
+        print("🔑 Token received: $token");
+        print("👤 User: $user");
+
+        /// Token check
+        if (token == null || token.toString().isEmpty) {
+          throw Exception("Token not found in response");
+        }
+
+        /// Save token
+        await authSeassion.saveToken(token);
+
         showAppSnackbar(
+          title: "সফল",
+          message:
+          result['message'] ?? "সফলভাবে নিবন্ধন হয়েছে",
+        );
 
+        print("✅ Registration success");
+
+        /// Navigate
+        Get.offAllNamed(Routes.LOGIN);
+      }
+
+      /// ================= VALIDATION ERROR =================
+      else if (response.statusCode == 422) {
+
+        print("⚠️ Validation error: $result");
+
+        String errorMessage = "";
+
+        if (result["errors"] != null) {
+          result["errors"].forEach((key, value) {
+            errorMessage += "${value[0]}\n";
+          });
+        } else {
+          errorMessage =
+              result['message'] ?? "Validation error";
+        }
+
+        showAppSnackbar(
           title: "ত্রুটি",
-          message: result["message"],
+          message: errorMessage.trim(),
           isError: true,
         );
-      } else {
+      }
+
+      /// ================= OTHER ERROR =================
+      else {
+
+        print("❌ Unknown error: ${response.statusCode}");
+
         showAppSnackbar(
           title: "ত্রুটি",
-          message: "Something went wrong : ${response.statusCode}",
+          message: result['message'] ??
+              "Something went wrong : ${response.statusCode}",
           isError: true,
         );
       }
     } catch (e) {
+
+      print("🔥 Exception: $e");
+
       showAppSnackbar(
         title: "ত্রুটি",
-        message: "Something went wrong $e ",
+        message: "Something went wrong : $e",
         isError: true,
       );
     } finally {
+
       isLoading.value = false;
+
+      print("⛔ Loading stopped");
     }
   }
+
+
+
+
+
+
+
+
+
+
 
   String? validateName(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -149,5 +235,7 @@ class RegisterController extends GetxController {
     phoneController.clear();
     emailController.clear();
     passwordController.clear();
+
+    print("🧹 Form cleared");
   }
 }
